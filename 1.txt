@@ -107,3 +107,81 @@ int main() {
     dispSparse(tm);
     return 0;
 }
+
+
+poly sum 
+#include <stdio.h>
+#define MAX_TERMS 100 
+typedef struct {
+    int coeff;
+    int exp;
+} Term;
+int readPolynomial(Term p[]) {
+    int n;
+    printf("Enter the number of terms: ");
+    scanf("%d", &n);
+    printf("Enter the terms as (coefficient exponent) pairs in descending order of exponent:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d %d", &p[i].coeff, &p[i].exp);
+    }
+    return n;
+}
+
+void displayPolynomial(Term p[], int n) {
+    if (n == 0) {
+        printf("0\n");
+        return;
+    }
+    for (int i = 0; i < n; i++) {
+        if (p[i].coeff == 0) continue; 
+        printf("%dx^%d", p[i].coeff, p[i].exp);
+        if (i < n - 1) {
+            printf(" + ");
+        }
+    }
+    printf("\n");
+}
+
+int addPolynomials(Term p1[], int n1, Term p2[], int n2, Term result[]) {
+    int i = 0, j = 0, k = 0;
+    while (i < n1 && j < n2) {
+        if (p1[i].exp > p2[j].exp) {
+            result[k++] = p1[i++];
+        }
+        else if (p2[j].exp > p1[i].exp) {
+            result[k++] = p2[j++];
+        }
+        else {
+            result[k].exp = p1[i].exp;
+            result[k].coeff = p1[i].coeff + p2[j].coeff;
+            if (result[k].coeff != 0) {
+                k++;
+            }
+            i++;
+            j++;
+        }
+    }
+    while (i < n1) {
+        result[k++] = p1[i++];
+    }
+    while (j < n2) {
+        result[k++] = p2[j++];
+    }
+    return k; 
+}
+int main() {
+    Term p1[MAX_TERMS], p2[MAX_TERMS], result[MAX_TERMS * 2];
+    int n1, n2, n3;
+    printf("--- Enter First Polynomial ---\n");
+    n1 = readPolynomial(p1);
+    printf("\n--- Enter Second Polynomial ---\n");
+    n2 = readPolynomial(p2);
+    n3 = addPolynomials(p1, n1, p2, n2, result);
+    printf("\nFirst Polynomial: ");
+    displayPolynomial(p1, n1);
+    printf("Second Polynomial: ");
+    displayPolynomial(p2, n2);
+    printf("Sum of Polynomials: ");
+    displayPolynomial(result, n3);
+    return 0;
+}
